@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestcontainersAPI", "TestcontainersAPI\TestcontainersAPI.csproj", "{0A84C3DB-CE9F-4DDE-B93C-81CF769E8970}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestcontainersAPI.Integration.Tests", "TestcontainersAPI.Integration.Tests\TestcontainersAPI.Integration.Tests.csproj", "{7152E1C4-614A-4AAD-9193-6D1B89D69503}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A84C3DB-CE9F-4DDE-B93C-81CF769E8970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A84C3DB-CE9F-4DDE-B93C-81CF769E8970}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A84C3DB-CE9F-4DDE-B93C-81CF769E8970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A84C3DB-CE9F-4DDE-B93C-81CF769E8970}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7152E1C4-614A-4AAD-9193-6D1B89D69503}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7152E1C4-614A-4AAD-9193-6D1B89D69503}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7152E1C4-614A-4AAD-9193-6D1B89D69503}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7152E1C4-614A-4AAD-9193-6D1B89D69503}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {97E3CF24-64FD-4E61-885C-8DDAB29ACCC0}
+	EndGlobalSection
+EndGlobal
