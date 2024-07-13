@@ -1,7 +1,4 @@
 ﻿using Bogus;
-using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
-using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -11,41 +8,40 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Respawn;
 using System.Data.Common;
+using Testcontainers.MsSql;
 using TestcontainersAPI.Data;
 
 namespace TestcontainersAPI.Integration.Tests;
 
 public class TestApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 {
-    private readonly TestcontainerDatabase _dbContainer
-        = new TestcontainersBuilder<MsSqlTestcontainer>()
-            .WithDatabase(new MsSqlTestcontainerConfiguration
-            {
-                Password = "password123$"
-            })
+    private readonly MsSqlContainer _dbContainer
+        = new MsSqlBuilder()
+            .WithPassword("password123$")
             .WithPortBinding(1433, 1433)
             .WithName("sql1")
+            .WithBindMount($"{AppDomain.CurrentDomain.BaseDirectory}/sql/data", "/var/opt/mssql/data")
             .Build();
 
     private Respawner _respawner = default!;
     private DbConnection _dbConnection = default!;
 
-    private string ConnectionString => $"{_dbContainer.ConnectionString}Encrypt=false;TrustServerCertificate=true";
-
     public HttpClient HttpClient { get; set; } = default!;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseEnvironment("Testing");
+
         builder.ConfigureTestServices(services =>
         {
-            var connectionString = _dbContainer.ConnectionString + "Encrypt=false;TrustServerCertificate=true";
+            var connectionString = _dbContainer.GetConnectionString();
 
             services.RemoveAll<TestDbContext>();
             services.RemoveAll<DbContextOptions<TestDbContext>>();
 
             services.AddDbContext<TestDbContext>(options =>
             {
-                options.UseSqlServer(ConnectionString);
+                options.UseSqlServer(connectionString);
             });
         });
     }
@@ -61,15 +57,15 @@ public class TestApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
         using (var scope = Services.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<TestDbContext>();
-            await context.Database.MigrateAsync();
+            await context.Database.EnsureCreatedAsync();
         }
 
-        _dbConnection = new SqlConnection(ConnectionString);
+        _dbConnection = new SqlConnection(_dbContainer.GetConnectionString());
         await _dbConnection.OpenAsync();
         _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
         {
             DbAdapter = DbAdapter.SqlServer,
-            SchemasToInclude = new[] { "dbo" }
+            SchemasToInclude = ["dbo"]
         });
     }
 
